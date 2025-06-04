@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="section">
+    <h2>Controls & Status</h2>
+    <button
+        class="button"
+        hx-post="{{ url_for('check_members_route') }}"
+        hx-target="#resultsArea"
+        hx-swap="innerHTML"
+        hx-indicator="#checkSpinner">
+        Trigger Validation Sweep
+    </button>
+    <div id="checkSpinner" class="spinner" style="margin-left: 10px; vertical-align: middle;"></div>
+
+    <div class="section" style="margin-top: 20px;">
+        <h3>Wicket API Health</h3>
+        <button
+            class="button"
+            hx-get="{{ url_for('wicket_api_health_route') }}"
+            hx-target="#wicketHealthArea"
+            hx-swap="innerHTML"
+            hx-indicator="#wicketHealthSpinner"
+            hx-trigger="click"
+            >Check Wicket API Health</button>
+        <div id="wicketHealthSpinner" class="spinner" style="margin-left: 10px; vertical-align: middle;"></div>
+        <div id="wicketHealthArea" hx-get="{{ url_for('wicket_api_health_route') }}" hx-trigger="load" hx-swap="innerHTML" hx-indicator="#wicketHealthSpinner">
+            <!-- Wicket health status will be loaded here by HTMx on page load -->
+            <p>Loading Wicket API status...</p>
+        </div>
+    </div>
+</div>
+
+<div class="section">
+    <h2>Last Run Results</h2>
+    <button
+        class="button"
+        hx-get="{{ url_for('get_results_route') }}"
+        hx-target="#resultsArea"
+        hx-swap="innerHTML"
+        hx-indicator="#resultsSpinner"
+        hx-trigger="click"
+        >Refresh Last Run Results</button>
+    <div id="resultsSpinner" class="spinner" style="margin-left: 10px; vertical-align: middle;"></div>
+    <div id="resultsArea" hx-get="{{ url_for('get_results_route') }}" hx-trigger="load" hx-swap="innerHTML" hx-indicator="#resultsSpinner">
+        <!-- Results will be loaded here by HTMx on page load -->
+        <p>Loading last run results...</p>
+    </div>
+</div>
+
+<div class="section">
+    <h2>Current Alerts</h2>
+     <button
+        class="button"
+        hx-get="{{ url_for('get_alerts_route') }}"
+        hx-target="#alertsArea"
+        hx-swap="innerHTML"
+        hx-indicator="#alertsSpinner"
+        hx-trigger="click"
+        >Refresh Current Alerts</button>
+    <div id="alertsSpinner" class="spinner" style="margin-left: 10px; vertical-align: middle;"></div>
+    <div id="alertsArea" hx-get="{{ url_for('get_alerts_route') }}" hx-trigger="load" hx-swap="innerHTML" hx-indicator="#alertsSpinner">
+        <!-- Alerts will be loaded here by HTMx on page load -->
+        <p>Loading current alerts...</p>
+    </div>
+</div>
+
+{% endblock %}

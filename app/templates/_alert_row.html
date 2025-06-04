@@ -1,0 +1,33 @@
+{% if alert %}
+<tr id="alert-row-{{ alert.reco_number }}">
+    <td>{{ alert.name }}</td>
+    <td>{{ alert.reco_number }}</td>
+    <td class="status-{{ alert.status_reported_by_reco | lower }}">{{ alert.status_reported_by_reco }}</td>
+    <td class="timestamp">{{ alert.first_flagged_timestamp | format_datetime }}</td>
+    <td class="timestamp">{{ alert.last_flagged_timestamp | format_datetime }}</td>
+    <td class="timestamp">
+        {% if alert.notification_sent_timestamp %}
+            Yes ({{ alert.notification_sent_timestamp | format_datetime }})
+        {% else %}
+            No
+        {% endif %}
+    </td>
+    <td>
+        <button class="button button-secondary"
+                hx-post="{{ url_for('resend_alert_route') }}"
+                hx-vals='{"reco_number": "{{ alert.reco_number }}"}'
+                hx-target="#alert-row-{{ alert.reco_number }}"
+                hx-swap="outerHTML"
+                hx-indicator="#resendSpinner-{{ alert.reco_number }}">
+            Resend Notify
+        </button>
+        <div id="resendSpinner-{{ alert.reco_number }}" class="spinner"></div>
+        {% if alert.message_after_resend %}
+            <span style="font-size:0.9em; color: {{ 'green' if 'OK' in alert.message_after_resend else 'red' }}; display:block; margin-top:5px;">{{ alert.message_after_resend }}</span>
+        {% endif %}
+    </td>
+</tr>
+{% else %}
+{# Fallback if somehow an empty alert is passed to this partial #}
+<tr><td colspan="7" class="status-error">Error updating alert row.</td></tr>
+{% endif %}

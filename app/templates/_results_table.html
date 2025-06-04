@@ -1,0 +1,47 @@
+{% if results and results.status == "completed" %}
+    <p><strong>Last Run:</strong> {{ results.timestamp | format_datetime }}</p>
+    <h4>Summary:</h4>
+    <ul>
+        {% for key, value in results.summary.items() %}
+        <li><strong>{{ key.replace('_', ' ') | capitalize }}:</strong> {{ value }}</li>
+        {% endfor %}
+    </ul>
+    <h4>Details (All Processed Members):</h4>
+    {% if results.all_processed_members %}
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>RECO #</th>
+                    <th>Wicket Status</th>
+                    <th>RECO Status</th>
+                    <th>RECO Last Checked</th>
+                    <th>Overall Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for member in results.all_processed_members %}
+                <tr>
+                    <td>{{ member.name }}</td>
+                    <td>{{ member.reco_number }}</td>
+                    <td>{{ member.wicket_status }}</td>
+                    <td class="status-{{ member.reco_status_details.status | lower }}">{{ member.reco_status_details.status }}</td>
+                    <td class="timestamp">{{ member.reco_status_details.last_checked | format_datetime if member.reco_status_details.last_checked else 'N/A' }}</td>
+                    <td class="status-{{ member.overall_status | lower }}">{{ member.overall_status | replace('_', ' ') | capitalize }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p>No detailed member processing information available for this run.</p>
+    {% endif %}
+{% elif results and results.status == "aborted" %}
+    <p><strong>Last Run Attempt:</strong> {{ results.timestamp | format_datetime }}</p>
+    <p class="status-error"><strong>Status: Aborted.</strong> Message: {{ results.message }}</p>
+{% elif results and results.error %}
+     <p class="status-error">Error loading results: {{ results.error }}</p>
+{% else %}
+    <p>No results available yet. Trigger a validation sweep.</p>
+{% endif %}
