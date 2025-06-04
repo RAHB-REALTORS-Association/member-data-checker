@@ -6,6 +6,7 @@ from app.database import init_db, get_db_connection
 from app.core_logic import perform_license_validation_sweep, get_last_run_results, get_all_alerts
 from app.notifications import send_notification_for_lapsed_licenses_db
 from app.integrations.wicket_api import check_wicket_api_health
+from app.integrations.reco_api import check_reco_registration_status
 
 IS_TEST_ENVIRONMENT = os.environ.get("FLASK_TESTING", "false").lower() == "true"
 
@@ -156,6 +157,16 @@ def resend_alert_route():
         return render_template('_alert_row.html', alert=final_alert_status_dict), 500
     finally:
         if conn: conn.close()
+
+@app.route('/reco/status/<reco_number>', methods=['GET'])
+def reco_status_route(reco_number: str):
+    """
+    Checks the RECO registration status for a given RECO number.
+    Returns a JSON response with the registration status.
+    """
+    app.logger.info(f"Received request for /reco/status/{reco_number}")
+    status = check_reco_registration_status(reco_number)
+    return jsonify({"registrationStatus": status})
 
 if __name__ == '__main__':
     # Set FLASK_ENV for development to enable debug mode (though app.run(debug=True) also does this)

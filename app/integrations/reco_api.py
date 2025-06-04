@@ -118,3 +118,42 @@ if __name__ == '__main__':
         logger.info(f"Status: {result['status']}")
         logger.info(f"Source: {result['source']}")
         logger.info(f"Last Checked: {time.ctime(result['last_checked'])}")
+
+
+def check_reco_registration_status(reco_number: str):
+    """
+    Checks the registration status of a RECO number.
+
+    Args:
+        reco_number: The RECO number to check.
+
+    Returns:
+        "REGISTERED" if the RECO number is registered, "INACTIVE_OR_INVALID" otherwise.
+    """
+    if not reco_number:
+        logger.error("RECO number cannot be empty.")
+        return "INACTIVE_OR_INVALID"
+
+    url = f"https://registrantsearch.reco.on.ca/api/Registrant/{reco_number}"
+    logger.info(f"Checking RECO registration status for {reco_number} at {url}")
+
+    try:
+        response = requests.get(url, timeout=15)
+        response.raise_for_status()  # Raise an exception for bad status codes (4xx or 5xx)
+    except requests.exceptions.RequestException as e:
+        logger.error(f"Error during request to RECO API for {reco_number}: {e}")
+        return "INACTIVE_OR_INVALID"
+
+    try:
+        data = response.json()
+    except json.JSONDecodeError as e: # Catch JSON decoding errors specifically
+        logger.error(f"Error parsing JSON response from RECO API for {reco_number}: {e}")
+        logger.debug(f"Response text: {response.text}")
+        return "INACTIVE_OR_INVALID"
+
+    if data.get("registrationStatus") == "REGISTERED":
+        logger.info(f"RECO number {reco_number} is REGISTERED.")
+        return "REGISTERED"
+    else:
+        logger.info(f"RECO number {reco_number} is INACTIVE_OR_INVALID or status not found. Status: {data.get('registrationStatus')}")
+        return "INACTIVE_OR_INVALID"
