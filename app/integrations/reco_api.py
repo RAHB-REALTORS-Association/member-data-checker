@@ -146,7 +146,7 @@ def check_reco_registration_status(reco_number: str):
 
     try:
         data = response.json()
-    except ValueError as e: # Catches JSONDecodeError as ValueError is its parent
+    except json.JSONDecodeError as e: # Catch JSON decoding errors specifically
         logger.error(f"Error parsing JSON response from RECO API for {reco_number}: {e}")
         logger.debug(f"Response text: {response.text}")
         return "INACTIVE_OR_INVALID"
