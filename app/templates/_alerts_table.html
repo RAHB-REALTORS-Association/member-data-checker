@@ -1,0 +1,51 @@
+{% if alerts %}
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>RECO #</th>
+                <th>Reported RECO Status</th>
+                <th>First Flagged</th>
+                <th>Last Flagged</th>
+                <th>Notification Sent</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for alert in alerts %}
+            <tr id="alert-row-{{ alert.reco_number }}">
+                <td>{{ alert.name }}</td>
+                <td>{{ alert.reco_number }}</td>
+                <td class="status-{{ alert.status_reported_by_reco | lower }}">{{ alert.status_reported_by_reco }}</td>
+                <td class="timestamp">{{ alert.first_flagged_timestamp | format_datetime }}</td>
+                <td class="timestamp">{{ alert.last_flagged_timestamp | format_datetime }}</td>
+                <td class="timestamp">
+                    {% if alert.notification_sent_timestamp %}
+                        Yes ({{ alert.notification_sent_timestamp | format_datetime }})
+                    {% else %}
+                        No
+                    {% endif %}
+                </td>
+                <td>
+                    <button class="button button-secondary"
+                            hx-post="{{ url_for('resend_alert_route') }}"
+                            hx-vals='{"reco_number": "{{ alert.reco_number }}"}'
+                            hx-target="#alert-row-{{ alert.reco_number }}"
+                            hx-swap="outerHTML"
+                            hx-indicator="#resendSpinner-{{ alert.reco_number }}">
+                        Resend Notify
+                    </button>
+                    <div id="resendSpinner-{{ alert.reco_number }}" class="spinner"></div>
+                    {% if alert.message_after_resend %} <!-- Custom field to show one-time message -->
+                        <span style="font-size:0.9em; color: green;">{{ alert.message_after_resend }}</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<p>No active alerts.</p>
+{% endif %}

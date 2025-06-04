@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Member Data Checker</title>
+    <!-- MonsterUI CSS - Replace with actual link from documentation -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@monster-ui/core@latest/dist/monster.min.css">
+    <!-- HTMx -->
+    <script src="https://unpkg.com/htmx.org@1.9.10" integrity="sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC" crossorigin="anonymous"></script>
+    <!-- Custom CSS if needed -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        body { font-family: sans-serif; margin: 0; background-color: #f4f7f6; }
+        .container { max-width: 1200px; margin: 20px auto; padding: 20px; background-color: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        header { background-color: #333; color: white; padding: 1em 0; text-align: center; margin-bottom: 20px; }
+        header h1 { margin: 0; }
+        .button { padding: 10px 15px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        .button:hover { background-color: #0056b3; }
+        .section { margin-bottom: 30px; padding: 15px; border: 1px solid #eee; border-radius: 5px; }
+        .section h2 { margin-top: 0; color: #333; }
+        .status-healthy { color: green; }
+        .status-unhealthy { color: red; }
+        .status-skipped, .status-error_checking_reco { color: orange; }
+        .status-flagged { color: red; font-weight: bold; }
+        .table-container { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+        th { background-color: #f9f9f9; }
+        .timestamp { font-size: 0.9em; color: #555; }
+        #resultsArea, #alertsArea, #wicketHealthArea { min-height: 50px; padding:10px; background-color: #e9ecef; border-radius:4px; margin-top:10px;}
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border-left-color: #09f;
+            animation: spin 1s ease infinite;
+            display: none; /* Hidden by default */
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Member Data Checker (MDC)</h1>
+    </header>
+    <div class="container">
+        {% block content %}{% endblock %}
+    </div>
+    <!-- MonsterUI JS (if any required components need it) -->
+    <!-- <script src="https://cdn.jsdelivr.net/npm/@monster-ui/core@latest/dist/monster.min.js"></script> -->
+    <script>
+        // HTMx event listeners for spinner
+        document.body.addEventListener('htmx:beforeRequest', function(event) {
+            var target = event.detail.target;
+            var spinnerId = target.getAttribute('hx-indicator');
+            if (spinnerId) { // check if hx-indicator is a selector
+                var spinner = document.querySelector(spinnerId); // use querySelector for more flexibility
+                 if (spinner) {
+                    spinner.style.display = 'inline-block';
+                }
+            } else { // fallback to previousElementSibling or self if spinner is within button
+                 var spinner = target.querySelector('.spinner') || (target.previousElementSibling && target.previousElementSibling.classList.contains('spinner'));
+                 if (spinner) {
+                    spinner.style.display = 'inline-block';
+                }
+            }
+        });
+        document.body.addEventListener('htmx:afterRequest', function(event) {
+            var target = event.detail.target;
+            var spinnerId = target.getAttribute('hx-indicator');
+            if (spinnerId) { // check if hx-indicator is a selector
+                var spinner = document.querySelector(spinnerId); // use querySelector
+                if (spinner) {
+                    spinner.style.display = 'none';
+                }
+            } else { // fallback
+                var spinner = target.querySelector('.spinner') || (target.previousElementSibling && target.previousElementSibling.classList.contains('spinner'));
+                if (spinner) {
+                    spinner.style.display = 'none';
+                }
+            }
+        });
+    </script>
+</body>
+</html>

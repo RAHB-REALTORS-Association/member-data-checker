@@ -1,0 +1,149 @@
+/* Custom styles for MDC app */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    background-color: #f8f9fa;
+    color: #333;
+}
+
+.container {
+    max-width: 1100px;
+    margin: 2rem auto;
+    padding: 1.5rem;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+header {
+    background-color: #343a40; /* Darker header */
+    color: #ffffff;
+    padding: 1.5rem 0;
+    text-align: center;
+    margin-bottom: 2rem;
+    border-radius: 8px 8px 0 0; /* Rounded top corners if container has no margin from header */
+}
+
+header h1 {
+    margin: 0;
+    font-size: 2rem;
+    font-weight: 500;
+}
+
+.button {
+    display: inline-block;
+    padding: 0.6rem 1.2rem;
+    background-color: #007bff; /* Primary blue */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none; /* If using <a> as buttons */
+    font-size: 0.95rem;
+    transition: background-color 0.2s ease-in-out;
+    margin-right: 0.5rem; /* Space between buttons */
+}
+
+.button:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+}
+
+.button-secondary { /* For less prominent actions */
+    background-color: #6c757d;
+}
+.button-secondary:hover {
+    background-color: #545b62;
+}
+
+.section {
+    margin-bottom: 2.5rem;
+    padding: 1.5rem;
+    border: 1px solid #dee2e6; /* Lighter border */
+    border-radius: 6px;
+    background-color: #fff; /* Keep section background white for contrast */
+}
+
+.section h2 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    color: #343a40; /* Dark heading color */
+    font-size: 1.5rem;
+    border-bottom: 2px solid #007bff; /* Accent border */
+    padding-bottom: 0.5rem;
+}
+.section h3 {
+    margin-top:0;
+    margin-bottom: 0.75rem;
+    color: #495057;
+    font-size: 1.2rem;
+}
+
+/* Area styling for HTMX loaded content */
+#resultsArea, #alertsArea, #wicketHealthArea {
+    margin-top: 1rem;
+    padding: 1rem;
+    background-color: #f8f9fa; /* Slightly off-white for content areas */
+    border: 1px solid #e9ecef;
+    border-radius: 5px;
+    min-height: 60px; /* Ensure space even when empty */
+    transition: background-color 0.3s ease; /* Smooth transition if content changes bg */
+}
+#resultsArea:empty::before, #alertsArea:empty::before, #wicketHealthArea:empty::before {
+    content: "No data loaded yet. Click refresh or trigger an action.";
+    color: #6c757d;
+    font-style: italic;
+}
+
+
+.status-healthy { color: #28a745; font-weight: bold; } /* Green */
+.status-unhealthy { color: #dc3545; font-weight: bold; } /* Red */
+.status-error, .status-error_checking_reco { color: #ffc107; font-weight: bold; } /* Amber/Yellow */
+.status-flagged { color: #dc3545; font-weight: bold; }
+.status-skipped { color: #6c757d; } /* Grey for skipped */
+
+.table-container { overflow-x: auto; margin-top: 1rem; }
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+}
+th, td {
+    border: 1px solid #e0e0e0; /* Slightly softer borders */
+    padding: 0.75rem 1rem;
+    text-align: left;
+    vertical-align: top;
+}
+th {
+    background-color: #e9ecef; /* Light grey header */
+    font-weight: 600; /* Bolder headers */
+    color: #495057;
+}
+tr:nth-child(even) { background-color: #f8f9fa; } /* Subtle striping */
+
+.timestamp { font-size: 0.85em; color: #6c757d; display: block; margin-top: 0.25rem; }
+.raw-json {
+    white-space: pre-wrap;
+    word-break: break-all;
+    background-color:#efefef;
+    padding: 10px;
+    border-radius: 4px;
+    font-family: monospace;
+    font-size: 0.85em;
+    max-height: 200px;
+    overflow-y: auto;
+}
+.spinner {
+    border: 3px solid rgba(0, 0, 0, 0.1);
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border-left-color: #007bff; /* Blue spinner */
+    animation: spin 0.8s linear infinite;
+    display: none; /* Hidden by default */
+    vertical-align: middle; /* Align with text/buttons */
+}
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}

@@ -1,0 +1,5 @@
+{# This can be used if not replacing the whole row, or as part of a more complex error display #}
+<span class="status-{{ message_type }}">
+    {% if reco_number %}Row for {{ reco_number }}: {% endif %}
+    {{ message }}
+</span>
